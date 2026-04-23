@@ -5,7 +5,6 @@ import {
   ArrowRight,
   MapPin,
   ShieldCheck,
-  Sparkles,
   Stethoscope,
   Truck,
 } from "lucide-react";
@@ -52,6 +51,14 @@ const editorialImages = {
     "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=900&q=80",
 };
 
+function formatPrice(value) {
+  if (value === undefined || value === null) {
+    return "По запросу";
+  }
+
+  return `${Number(value).toLocaleString()} ₸`;
+}
+
 export default function Home() {
   const { openWidget } = useAiWidget();
 
@@ -73,17 +80,46 @@ export default function Home() {
 
   const featuredShelf = featured.length > 0 ? featured : newArrivals.slice(0, 4);
   const bestsellerShelf = bestsellers.length > 0 ? bestsellers : featured.slice(0, 4);
+  const heroFallbacks = [
+    {
+      name: "Barrier Recovery Cream",
+      category: "Восстановление барьера",
+      short_description: "Питательный крем для сухой и чувствительной кожи.",
+      image_url: editorialImages.heroPrimary,
+      price: 18200,
+      volume: "50 мл",
+    },
+    {
+      name: "Hydrating Cleanser",
+      category: "Очищение",
+      short_description: "Мягкий гель для ежедневного комфортного очищения.",
+      image_url: editorialImages.heroSecondary,
+      price: 12500,
+      volume: "200 мл",
+    },
+    {
+      name: "Clarity Serum",
+      category: "Сыворотка",
+      short_description: "Сыворотка для более ровного тона и чистой текстуры кожи.",
+      image_url: editorialImages.heroDetail,
+      price: 16800,
+      volume: "30 мл",
+    },
+  ];
+  const heroMainProduct = featuredShelf[0] || bestsellerShelf[0] || heroFallbacks[0];
+  const heroSecondaryProduct = bestsellerShelf[0] || newArrivals[0] || heroFallbacks[1];
+  const heroAccentProduct = newArrivals[0] || featuredShelf[1] || heroFallbacks[2];
 
   return (
     <div className="overflow-x-hidden">
       <section className="relative isolate overflow-hidden border-b border-[#EEE2D6] bg-[#FBF7F1] pb-16 pt-10 lg:pb-20">
-        <div className="pointer-events-none absolute inset-0 opacity-80">
-          <div className="hero-marble-backdrop absolute right-[-8%] top-10 h-[82%] w-[64%] rounded-[3rem] blur-[0.3px]" />
-          <div className="absolute left-[-80px] top-24 h-72 w-72 rounded-full bg-[#F3E3D7]/55 blur-[95px]" />
-          <div className="absolute right-[-30px] top-14 h-72 w-72 rounded-full bg-[#EEE1CA]/55 blur-[100px]" />
+        <div className="pointer-events-none absolute inset-0 opacity-90">
+          <div className="absolute inset-x-0 top-0 h-[54%] bg-[linear-gradient(180deg,rgba(255,255,255,0.65),rgba(251,247,241,0))]" />
+          <div className="absolute left-[-90px] top-24 h-72 w-72 rounded-full bg-[#F3E3D7]/55 blur-[100px]" />
+          <div className="absolute right-[-30px] top-14 h-72 w-72 rounded-full bg-[#EEE1CA]/55 blur-[105px]" />
         </div>
 
-        <div className="relative mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl gap-12 px-6 lg:grid-cols-[0.88fr_1.12fr] lg:items-center lg:px-12">
+        <div className="relative mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl gap-10 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:px-12">
           <motion.div
             initial={{ opacity: 0, x: -24 }}
             animate={{ opacity: 1, x: 0 }}
@@ -97,7 +133,7 @@ export default function Home() {
               </span>
             </div>
 
-            <h1 className="mt-7 max-w-3xl font-serif text-[3rem] font-medium leading-[0.94] text-stone md:text-[4.15rem] lg:text-[4.7rem]">
+            <h1 className="mt-7 max-w-3xl font-serif text-[2.95rem] font-medium leading-[0.94] text-stone md:text-[4rem] lg:text-[4.45rem]">
               Профессиональный уход
               <br />
               <span className="gold-shimmer">с деликатной подачей</span>
@@ -105,9 +141,10 @@ export default function Home() {
               настоящего бренда
             </h1>
 
-            <p className="mt-6 max-w-xl text-[15px] leading-8 text-stone/78">
-              YUVEMA объединяет каталог, консультацию и B2B-сервис в спокойный и эстетичный
-              продуктовый опыт, которому хочется доверять и в который хочется возвращаться.
+            <p className="mt-6 max-w-xl text-[15px] leading-8 text-stone/84">
+              YUVEMA объединяет каталог, консультацию и B2B-сервис в спокойный продуктовый опыт,
+              где премиальная подача держится на чистой композиции, грамотном ассортименте и
+              понятном выборе.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -145,12 +182,25 @@ export default function Home() {
             </div>
 
             <div className="mt-8 overflow-hidden rounded-[2rem] border border-[#EDE1D4] bg-white/88 p-3 shadow-soft-lg lg:hidden">
-              <div className="hero-marble-card overflow-hidden rounded-[1.6rem] p-3">
-                <img
-                  src={editorialImages.heroPrimary}
-                  alt="Премиальная уходовая косметика YUVEMA"
-                  className="h-[420px] w-full rounded-[1.35rem] object-cover"
-                />
+              <div className="hero-marble-shell overflow-hidden rounded-[1.6rem] border border-white/80 p-3">
+                <div className="hero-marble-stage rounded-[1.35rem] p-3">
+                  <img
+                    src={heroMainProduct.image_url || editorialImages.heroPrimary}
+                    alt={heroMainProduct.name || "Премиальная уходовая косметика YUVEMA"}
+                    className="h-[360px] w-full rounded-[1.25rem] object-cover"
+                  />
+                </div>
+                <div className="rounded-[1.3rem] bg-white/90 px-4 py-4">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                    {heroMainProduct.category || "Профессиональный уход"}
+                  </p>
+                  <p className="mt-2 font-serif text-[1.6rem] leading-none text-stone">
+                    {heroMainProduct.name}
+                  </p>
+                  <p className="mt-2 text-sm leading-relaxed text-stone/78">
+                    {heroMainProduct.short_description}
+                  </p>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -161,63 +211,88 @@ export default function Home() {
             transition={{ duration: 0.95, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
             className="relative hidden lg:block"
           >
-            <div className="hero-marble-card relative mx-auto max-w-[660px] rounded-[2.8rem] border border-white/80 p-5 shadow-soft-xl">
-              <div className="grid gap-4 lg:grid-cols-[0.72fr_1.02fr]">
-                <div className="flex flex-col gap-4">
-                  <div className="overflow-hidden rounded-[1.9rem] border border-white/80 bg-white/88 p-3 shadow-soft-md">
-                    <img
-                      src={editorialImages.heroSecondary}
-                      alt="Уходовая косметика на светлом мраморе"
-                      className="h-[278px] w-full rounded-[1.45rem] object-cover"
-                    />
-                    <div className="px-2 pb-2 pt-4">
-                      <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                        Эстетика ухода
-                      </p>
-                      <p className="mt-2 text-sm leading-relaxed text-stone/78">
-                        Светлая композиция, чистый продукт и никакого тёмного тяжёлого пятна в первом экране.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="rounded-[1.9rem] border border-white/80 bg-white/88 p-5 shadow-soft-md">
-                    <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                      Почерк бренда
-                    </p>
-                    <p className="mt-4 font-serif text-[1.95rem] leading-[1.02] text-stone">
-                      Мрамор, мягкий свет, продукт и чёткая premium-композиция без визуального шума.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="overflow-hidden rounded-[2.2rem] border border-white/85 bg-white/88 p-3 shadow-soft-lg">
-                    <div className="hero-marble-stage rounded-[1.85rem] p-3">
-                      <img
-                        src={editorialImages.heroPrimary}
-                        alt="Профессиональная косметика YUVEMA"
-                        className="h-[498px] w-full rounded-[1.55rem] object-cover"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-[0.92fr_1.08fr] gap-4">
-                    <div className="overflow-hidden rounded-[1.7rem] border border-white/80 bg-white/88 p-3 shadow-soft-md">
-                      <img
-                        src={editorialImages.heroDetail}
-                        alt="Сыворотка YUVEMA в editorial-композиции"
-                        className="h-[178px] w-full rounded-[1.3rem] object-cover"
-                      />
-                    </div>
-
-                    <div className="rounded-[1.7rem] border border-white/80 bg-white/88 p-5 shadow-soft-md">
-                      <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                        <MapPin className="h-3.5 w-3.5 text-primary" />
-                        {siteConfig.city}
+            <div className="relative mx-auto max-w-[680px]">
+              <div className="hero-marble-backdrop absolute inset-4 rounded-[3rem] opacity-95 shadow-soft-xl" />
+              <div className="hero-marble-shell relative rounded-[3rem] border border-white/80 p-5 shadow-soft-xl">
+                <div className="hero-marble-stage relative min-h-[655px] overflow-hidden rounded-[2.55rem] border border-white/80 p-8">
+                  <div className="grid h-full gap-4 lg:grid-cols-[0.42fr_0.58fr]">
+                    <div className="flex flex-col gap-4">
+                      <div className="rounded-[1.7rem] border border-white/85 bg-white/94 p-5 shadow-soft-md">
+                        <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                          Светлый мрамор
+                        </p>
+                        <p className="mt-3 font-serif text-[1.78rem] leading-[1.02] text-stone">
+                          Чистая продуктовая подача без тяжёлого визуального шума
+                        </p>
+                        <p className="mt-3 text-sm leading-relaxed text-stone/76">
+                          Мягкий свет, живой товар и аккуратные карточки вместо декоративной перегрузки.
+                        </p>
                       </div>
-                      <p className="mt-4 font-serif text-[1.65rem] leading-[1.04] text-stone">
-                        Консультация встроена в сайт и помогает довести клиента до уверенного выбора.
-                      </p>
+
+                      <div className="mt-auto overflow-hidden rounded-[1.7rem] border border-white/85 bg-white/92 p-3 shadow-soft-md">
+                        <img
+                          src={heroSecondaryProduct.image_url || editorialImages.heroSecondary}
+                          alt={heroSecondaryProduct.name || "Уходовая косметика YUVEMA"}
+                          className="h-[188px] w-full rounded-[1.2rem] object-cover"
+                        />
+                        <div className="px-1 pb-1 pt-4">
+                          <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                            {heroSecondaryProduct.category || "Очищение"}
+                          </p>
+                          <p className="mt-2 font-serif text-[1.45rem] leading-[1.02] text-stone">
+                            {heroSecondaryProduct.name}
+                          </p>
+                          <p className="mt-2 text-sm text-stone/74">
+                            {formatPrice(heroSecondaryProduct.price)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-4">
+                      <div className="relative flex-1 overflow-hidden rounded-[2.15rem] border border-white/85 bg-white/92 shadow-soft-lg">
+                        <img
+                          src={heroMainProduct.image_url || editorialImages.heroPrimary}
+                          alt={heroMainProduct.name || "Профессиональная косметика YUVEMA"}
+                          className="h-[438px] w-full object-cover"
+                        />
+                        <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,rgba(255,255,255,0),rgba(255,252,248,0.98))] px-5 pb-5 pt-16">
+                          <p className="text-[10px] uppercase tracking-[0.22em] text-[#7D6852]">
+                            {heroMainProduct.category || "Профессиональный уход"}
+                          </p>
+                          <div className="mt-2 flex items-end justify-between gap-3">
+                            <div>
+                              <p className="font-serif text-[1.55rem] leading-[1.02] text-stone">
+                                {heroMainProduct.name}
+                              </p>
+                              <p className="mt-2 text-sm text-stone/76">
+                                {formatPrice(heroMainProduct.price)}
+                              </p>
+                            </div>
+                            <span className="pb-1 text-sm text-muted-foreground">
+                              {heroMainProduct.volume}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="rounded-[1.7rem] border border-[#E7D5C0] bg-[#FFF9F2]/96 p-5 shadow-soft-md">
+                        <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                          <MapPin className="h-3.5 w-3.5 text-primary" />
+                          {siteConfig.city}
+                        </div>
+                        <div className="mt-3 flex items-end justify-between gap-4">
+                          <div>
+                            <p className="font-serif text-[1.32rem] leading-[1.05] text-stone">
+                              {heroAccentProduct.name}
+                            </p>
+                            <p className="mt-2 text-sm leading-relaxed text-stone/76">
+                              {heroAccentProduct.volume}
+                            </p>
+                          </div>
+                          <p className="text-sm text-stone">{formatPrice(heroAccentProduct.price)}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -35,6 +35,7 @@ export default function AuthDialog() {
     () => searchParams.get("next") || "/account",
     [searchParams],
   );
+  const isAdminFlow = nextPath.startsWith("/admin") || location.pathname.startsWith("/admin");
 
   useEffect(() => {
     if (dialogMode === "login" || dialogMode === "register") {
@@ -115,22 +116,31 @@ export default function AuthDialog() {
           <div className="bg-marble-rich p-8 md:p-10">
             <BrandMark className="mb-8" />
             <Badge variant="outline" className="border-[#E3D0B2] bg-white/75 text-[#7A613E]">
-              Премиальный доступ
+              {isAdminFlow ? "Вход в админку" : "Премиальный доступ"}
             </Badge>
             <h2 className="mt-6 font-serif text-[2.6rem] leading-[0.94] text-stone">
-              Вход и регистрация теперь открываются прямо поверх сайта
+              {isAdminFlow
+                ? "Вход администратора открывается прямо поверх сайта"
+                : "Вход и регистрация теперь открываются прямо поверх сайта"}
             </h2>
             <p className="mt-5 max-w-md text-sm leading-8 text-stone/70">
-              Без отдельной страницы. Вы входите, возвращаетесь в нужный сценарий и сразу
-              продолжаете путь до покупки, B2B-заявки или админки.
+              {isAdminFlow
+                ? "Без отдельной страницы. После входа с ролью admin система сразу переводит вас в административную панель."
+                : "Без отдельной страницы. Вы входите, возвращаетесь в нужный сценарий и сразу продолжаете путь до покупки, B2B-заявки или админки."}
             </p>
 
             <div className="mt-8 space-y-3">
-              {[
-                "Вход администратора с автоматическим переходом в /admin",
-                "Обычный клиент попадает в личный кабинет без лишних шагов",
-                "Регистрация, консультация и покупка остаются в одном потоке",
-              ].map((item) => (
+              {(isAdminFlow
+                ? [
+                    "Введите админ-аккаунт, и система сразу откроет /admin",
+                    "Если роль ещё не подтянулась, сервер синхронизирует профиль через /api/auth-profile",
+                    "Окно входа закрывается, а сценарий продолжается без лишней страницы",
+                  ]
+                : [
+                    "Вход администратора с автоматическим переходом в /admin",
+                    "Обычный клиент попадает в личный кабинет без лишних шагов",
+                    "Регистрация, консультация и покупка остаются в одном потоке",
+                  ]).map((item) => (
                 <div
                   key={item}
                   className="rounded-[1.35rem] border border-white/75 bg-white/72 px-4 py-4 text-sm leading-relaxed text-stone/75 shadow-soft"
@@ -148,7 +158,9 @@ export default function AuthDialog() {
               </DialogTitle>
               <p className="text-sm leading-7 text-muted-foreground">
                 {mode === "login"
-                  ? "Если это админ-аккаунт, система сама откроет административную панель."
+                  ? isAdminFlow
+                    ? "Если этот аккаунт имеет роль admin, вход завершится прямым переходом в административную панель."
+                    : "Если это админ-аккаунт, система сама откроет административную панель."
                   : "Создайте аккаунт, чтобы отслеживать заказы, подавать B2B-заявку и работать с подбором ухода."}
               </p>
             </DialogHeader>

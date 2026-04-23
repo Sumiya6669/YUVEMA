@@ -64,6 +64,10 @@ export default function Account() {
     return <Navigate replace to="/?auth=login&next=%2Faccount" />;
   }
 
+  if (user?.role === "admin") {
+    return <Navigate replace to="/admin" />;
+  }
+
   return (
     <div className="mx-auto max-w-5xl px-6 py-12 lg:px-8">
       <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">

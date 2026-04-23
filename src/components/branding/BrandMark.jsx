@@ -5,14 +5,14 @@ export default function BrandMark({ compact = false, className = "", tone = "gol
   const toneClass =
     tone === "light"
       ? "text-white drop-shadow-[0_8px_18px_rgba(255,255,255,0.2)]"
-      : "gold-shimmer";
+      : "brand-wordmark";
 
   return (
     <div className={cn("inline-flex items-center", className)}>
       <span
         className={cn(
-          "font-sans font-semibold uppercase leading-none tracking-[0.18em]",
-          compact ? "text-[1rem]" : "text-[1.24rem]",
+          "font-sans font-bold uppercase leading-none tracking-[0.14em]",
+          compact ? "text-[1.02rem]" : "text-[1.38rem]",
           toneClass,
         )}
       >

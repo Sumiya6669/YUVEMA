@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Heart, ShoppingBag, Sparkles } from "lucide-react";
@@ -18,6 +18,7 @@ function formatPrice(value) {
 export default function ProductCard({ product, index = 0 }) {
   const queryClient = useQueryClient();
   const { isB2BClient } = useAuth();
+  const [imageFailed, setImageFailed] = useState(false);
   const displayPrice =
     isB2BClient && product.wholesale_price ? product.wholesale_price : product.price;
 
@@ -68,10 +69,12 @@ export default function ProductCard({ product, index = 0 }) {
       <Link to={`/product/${product.id}`} className="block">
         <article className="premium-card marble-surface overflow-hidden p-3">
           <div className="relative mb-5 aspect-[0.82] overflow-hidden rounded-[1.35rem] bg-nude">
-            {product.image_url ? (
+            {product.image_url && !imageFailed ? (
               <img
                 src={product.image_url}
                 alt={product.name}
+                loading="lazy"
+                onError={() => setImageFailed(true)}
                 className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"
               />
             ) : (
