@@ -1,4 +1,5 @@
 import { supabase } from "@/services/supabase/client";
+import { createProductsEntity } from "@/services/api/products";
 import { createSupabaseEntity } from "@/services/api/supabaseEntity";
 import {
   assertNoError,
@@ -94,10 +95,7 @@ async function getUserRecord() {
   };
 }
 
-const Product = createSupabaseEntity({
-  table: "products",
-  defaultOrder: "-created_date",
-});
+const Product = createProductsEntity();
 
 const BlogPost = createSupabaseEntity({
   table: "blog_posts",
