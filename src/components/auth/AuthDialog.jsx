@@ -112,42 +112,19 @@ export default function AuthDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && closeDialog()}>
       <DialogContent className="max-w-[920px] overflow-hidden border-[#E7DACD] bg-[#FFFCF8] p-0 shadow-soft-xl">
-        <div className="grid lg:grid-cols-[0.92fr_1.08fr]">
+        <div className="grid lg:grid-cols-[0.7fr_1.3fr]">
           <div className="bg-marble-rich p-8 md:p-10">
             <BrandMark className="mb-8" />
             <Badge variant="outline" className="border-[#E3D0B2] bg-white/75 text-[#7A613E]">
               {isAdminFlow ? "Вход в админку" : "Премиальный доступ"}
             </Badge>
-            <h2 className="mt-6 font-serif text-[2.6rem] leading-[0.94] text-stone">
-              {isAdminFlow
-                ? "Вход администратора открывается прямо поверх сайта"
-                : "Вход и регистрация теперь открываются прямо поверх сайта"}
-            </h2>
-            <p className="mt-5 max-w-md text-sm leading-8 text-stone/70">
-              {isAdminFlow
-                ? "Без отдельной страницы. После входа с ролью admin система сразу переводит вас в административную панель."
-                : "Без отдельной страницы. Вы входите, возвращаетесь в нужный сценарий и сразу продолжаете путь до покупки, B2B-заявки или админки."}
-            </p>
-
-            <div className="mt-8 space-y-3">
-              {(isAdminFlow
-                ? [
-                    "Введите админ-аккаунт, и система сразу откроет /admin",
-                    "Если роль ещё не подтянулась, сервер синхронизирует профиль через /api/auth-profile",
-                    "Окно входа закрывается, а сценарий продолжается без лишней страницы",
-                  ]
-                : [
-                    "Вход администратора с автоматическим переходом в /admin",
-                    "Обычный клиент попадает в личный кабинет без лишних шагов",
-                    "Регистрация, консультация и покупка остаются в одном потоке",
-                  ]).map((item) => (
-                <div
-                  key={item}
-                  className="rounded-[1.35rem] border border-white/75 bg-white/72 px-4 py-4 text-sm leading-relaxed text-stone/75 shadow-soft"
-                >
-                  {item}
-                </div>
-              ))}
+            <div className="mt-10 rounded-[1.8rem] border border-white/80 bg-white/68 p-6 shadow-soft">
+              <p className="text-[10px] uppercase tracking-[0.24em] text-[#8A7258]">
+                {isAdminFlow ? "Admin access" : "Аккаунт YUVEMA"}
+              </p>
+              <p className="mt-4 font-serif text-[2rem] leading-[1.02] text-stone">
+                {isAdminFlow ? "Авторизация администратора" : "Авторизация и регистрация"}
+              </p>
             </div>
           </div>
 
@@ -156,61 +133,56 @@ export default function AuthDialog() {
               <DialogTitle className="font-serif text-[2rem] font-medium text-stone">
                 {mode === "login" ? "Войти" : "Создать аккаунт"}
               </DialogTitle>
-              <p className="text-sm leading-7 text-muted-foreground">
-                {mode === "login"
-                  ? isAdminFlow
-                    ? "Если этот аккаунт имеет роль admin, вход завершится прямым переходом в административную панель."
-                    : "Если это админ-аккаунт, система сама откроет административную панель."
-                  : "Создайте аккаунт, чтобы отслеживать заказы, подавать B2B-заявку и работать с подбором ухода."}
-              </p>
             </DialogHeader>
 
-            <div className="mt-6 flex rounded-full bg-[#F5EEE6] p-1">
-              <button
-                type="button"
-                onClick={() => {
-                  setMode("login");
-                  navigate(
-                    buildAuthUrl({
-                      pathname: location.pathname,
-                      search: location.search,
-                      mode: "login",
-                      nextPath,
-                    }),
-                    { replace: true },
-                  );
-                }}
-                className={`flex-1 rounded-full px-4 py-2.5 text-sm transition-colors ${
-                  mode === "login"
-                    ? "bg-white font-medium text-stone shadow-soft"
-                    : "text-muted-foreground"
-                }`}
-              >
-                Вход
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setMode("register");
-                  navigate(
-                    buildAuthUrl({
-                      pathname: location.pathname,
-                      search: location.search,
-                      mode: "register",
-                      nextPath,
-                    }),
-                    { replace: true },
-                  );
-                }}
-                className={`flex-1 rounded-full px-4 py-2.5 text-sm transition-colors ${
-                  mode === "register"
-                    ? "bg-white font-medium text-stone shadow-soft"
-                    : "text-muted-foreground"
-                }`}
-              >
-                Регистрация
-              </button>
-            </div>
+            {!isAdminFlow && (
+              <div className="mt-6 flex rounded-full bg-[#F5EEE6] p-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode("login");
+                    navigate(
+                      buildAuthUrl({
+                        pathname: location.pathname,
+                        search: location.search,
+                        mode: "login",
+                        nextPath,
+                      }),
+                      { replace: true },
+                    );
+                  }}
+                  className={`flex-1 rounded-full px-4 py-2.5 text-sm transition-colors ${
+                    mode === "login"
+                      ? "bg-white font-medium text-stone shadow-soft"
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  Вход
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode("register");
+                    navigate(
+                      buildAuthUrl({
+                        pathname: location.pathname,
+                        search: location.search,
+                        mode: "register",
+                        nextPath,
+                      }),
+                      { replace: true },
+                    );
+                  }}
+                  className={`flex-1 rounded-full px-4 py-2.5 text-sm transition-colors ${
+                    mode === "register"
+                      ? "bg-white font-medium text-stone shadow-soft"
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  Регистрация
+                </button>
+              </div>
+            )}
 
             {mode === "login" ? (
               <form onSubmit={handleLogin} className="mt-6 space-y-4">

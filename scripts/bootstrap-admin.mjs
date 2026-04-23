@@ -96,6 +96,22 @@ if (!adminUser) {
   }
 
   adminUser = data.user;
+} else {
+  const { data, error } = await adminClient.auth.admin.updateUserById(adminUser.id, {
+    password: process.env.ADMIN_PASSWORD,
+    email_confirm: true,
+    user_metadata: {
+      ...(adminUser.user_metadata || {}),
+      full_name: "YUVEMA Admin",
+    },
+  });
+
+  if (error) {
+    console.error(error.message);
+    process.exit(1);
+  }
+
+  adminUser = data.user;
 }
 
 const { error: profileError } = await adminClient.from("profiles").upsert(

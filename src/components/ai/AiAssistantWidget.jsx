@@ -273,9 +273,9 @@ export default function AiAssistantWidget() {
       <button
         type="button"
         onClick={() => openWidget()}
-        className="fixed bottom-5 right-4 z-[60] inline-flex items-center gap-3 rounded-full border border-[#DFC4A2] bg-[#F6E9D9] px-4 py-3 text-sm font-medium text-[#604A35] shadow-[0_18px_40px_rgba(156,123,102,0.16)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#F2E1CB] sm:bottom-7 sm:right-7"
+        className="fixed bottom-4 right-4 z-[60] inline-flex items-center gap-2.5 rounded-full border border-[#DFC4A2] bg-[#F6E9D9] px-3.5 py-2.5 text-sm font-medium text-[#604A35] shadow-[0_18px_40px_rgba(156,123,102,0.16)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#F2E1CB] sm:bottom-6 sm:right-6"
       >
-        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow-soft">
+        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-soft">
           <MessageCircle className="h-[18px] w-[18px] text-[#9D7A4E]" strokeWidth={1.7} />
         </span>
         <span className="hidden text-left sm:block">
@@ -304,7 +304,7 @@ export default function AiAssistantWidget() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 18, scale: 0.98 }}
               transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-x-3 bottom-3 top-[5.75rem] flex flex-col overflow-hidden rounded-[2rem] border border-[#E9DDD0] bg-[#FFFCF8]/96 shadow-[0_36px_90px_rgba(156,123,102,0.22)] backdrop-blur-xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:top-24 sm:w-[420px]"
+              className="absolute inset-x-3 bottom-3 top-auto flex h-[72vh] max-h-[700px] flex-col overflow-hidden rounded-[2rem] border border-[#E9DDD0] bg-[#FFFCF8]/96 shadow-[0_36px_90px_rgba(156,123,102,0.22)] backdrop-blur-xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:h-[620px] sm:max-h-[72vh] sm:w-[392px]"
             >
               <div className="border-b border-[#EEE3D6] px-5 py-4">
                 <div className="flex items-start justify-between gap-4">
@@ -345,7 +345,7 @@ export default function AiAssistantWidget() {
                 </div>
               </div>
 
-              <div ref={scrollerRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
+              <div ref={scrollerRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-3">
                 {entries.map((entry) => (
                   <ChatEntry
                     key={entry.id}
@@ -497,7 +497,7 @@ export default function AiAssistantWidget() {
                         value={draft}
                         onChange={(event) => setDraft(event.target.value)}
                         placeholder={scenario.placeholder}
-                        className="min-h-[96px] w-full resize-none border-0 bg-transparent px-1 py-1 text-sm leading-relaxed text-stone outline-none placeholder:text-muted-foreground/75"
+                        className="min-h-[72px] w-full resize-none border-0 bg-transparent px-1 py-1 text-sm leading-relaxed text-stone outline-none placeholder:text-muted-foreground/75"
                       />
 
                       <div className="mt-3 flex items-center justify-between gap-3">

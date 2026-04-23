@@ -41,12 +41,6 @@ const valueCards = [
 ];
 
 const editorialImages = {
-  heroPrimary:
-    "https://images.unsplash.com/photo-1625772452859-1c03d5bf1137?auto=format&fit=crop&w=1200&q=80",
-  heroSecondary:
-    "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=900&q=80",
-  heroDetail:
-    "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=900&q=80",
   b2b:
     "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=900&q=80",
 };
@@ -85,25 +79,25 @@ export default function Home() {
       name: "Barrier Recovery Cream",
       category: "Восстановление барьера",
       short_description: "Питательный крем для сухой и чувствительной кожи.",
-      image_url: editorialImages.heroPrimary,
       price: 18200,
       volume: "50 мл",
+      skin_types: ["Сухая", "Чувствительная"],
     },
     {
       name: "Hydrating Cleanser",
       category: "Очищение",
       short_description: "Мягкий гель для ежедневного комфортного очищения.",
-      image_url: editorialImages.heroSecondary,
       price: 12500,
       volume: "200 мл",
+      skin_types: ["Чувствительная", "Комбинированная"],
     },
     {
       name: "Clarity Serum",
       category: "Сыворотка",
       short_description: "Сыворотка для более ровного тона и чистой текстуры кожи.",
-      image_url: editorialImages.heroDetail,
       price: 16800,
       volume: "30 мл",
+      skin_types: ["Жирная", "Комбинированная"],
     },
   ];
   const heroMainProduct = featuredShelf[0] || bestsellerShelf[0] || heroFallbacks[0];
@@ -114,6 +108,7 @@ export default function Home() {
     <div className="overflow-x-hidden">
       <section className="relative isolate overflow-hidden border-b border-[#EEE2D6] bg-[#FBF7F1] pb-16 pt-10 lg:pb-20">
         <div className="pointer-events-none absolute inset-0 opacity-90">
+          <div className="hero-marble-backdrop absolute inset-0 opacity-80" />
           <div className="absolute inset-x-0 top-0 h-[54%] bg-[linear-gradient(180deg,rgba(255,255,255,0.65),rgba(251,247,241,0))]" />
           <div className="absolute left-[-90px] top-24 h-72 w-72 rounded-full bg-[#F3E3D7]/55 blur-[100px]" />
           <div className="absolute right-[-30px] top-14 h-72 w-72 rounded-full bg-[#EEE1CA]/55 blur-[105px]" />
@@ -183,12 +178,30 @@ export default function Home() {
 
             <div className="mt-8 overflow-hidden rounded-[2rem] border border-[#EDE1D4] bg-white/88 p-3 shadow-soft-lg lg:hidden">
               <div className="hero-marble-shell overflow-hidden rounded-[1.6rem] border border-white/80 p-3">
-                <div className="hero-marble-stage rounded-[1.35rem] p-3">
-                  <img
-                    src={heroMainProduct.image_url || editorialImages.heroPrimary}
-                    alt={heroMainProduct.name || "Премиальная уходовая косметика YUVEMA"}
-                    className="h-[360px] w-full rounded-[1.25rem] object-cover"
-                  />
+                <div className="hero-marble-stage rounded-[1.35rem] p-6">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                    Мраморная композиция
+                  </p>
+                  <p className="mt-4 font-serif text-[1.9rem] leading-[1.02] text-stone">
+                    {heroMainProduct.name}
+                  </p>
+                  <p className="mt-3 text-sm leading-relaxed text-stone/78">
+                    {heroMainProduct.short_description}
+                  </p>
+                  <div className="mt-6 grid grid-cols-2 gap-3">
+                    <div className="rounded-[1.2rem] border border-white/85 bg-white/88 px-4 py-3">
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        Формат
+                      </p>
+                      <p className="mt-2 text-sm text-stone">{heroMainProduct.volume}</p>
+                    </div>
+                    <div className="rounded-[1.2rem] border border-white/85 bg-white/88 px-4 py-3">
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        Стоимость
+                      </p>
+                      <p className="mt-2 text-sm text-stone">{formatPrice(heroMainProduct.price)}</p>
+                    </div>
+                  </div>
                 </div>
                 <div className="rounded-[1.3rem] bg-white/90 px-4 py-4">
                   <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
@@ -198,7 +211,7 @@ export default function Home() {
                     {heroMainProduct.name}
                   </p>
                   <p className="mt-2 text-sm leading-relaxed text-stone/78">
-                    {heroMainProduct.short_description}
+                    {(heroMainProduct.skin_types || []).slice(0, 2).join(" • ") || heroMainProduct.short_description}
                   </p>
                 </div>
               </div>
@@ -212,7 +225,7 @@ export default function Home() {
             className="relative hidden lg:block"
           >
             <div className="relative mx-auto max-w-[680px]">
-              <div className="hero-marble-backdrop absolute inset-4 rounded-[3rem] opacity-95 shadow-soft-xl" />
+              <div className="hero-marble-backdrop absolute inset-3 rounded-[3rem] opacity-95 shadow-soft-xl" />
               <div className="hero-marble-shell relative rounded-[3rem] border border-white/80 p-5 shadow-soft-xl">
                 <div className="hero-marble-stage relative min-h-[655px] overflow-hidden rounded-[2.55rem] border border-white/80 p-8">
                   <div className="grid h-full gap-4 lg:grid-cols-[0.42fr_0.58fr]">
@@ -229,49 +242,78 @@ export default function Home() {
                         </p>
                       </div>
 
-                      <div className="mt-auto overflow-hidden rounded-[1.7rem] border border-white/85 bg-white/92 p-3 shadow-soft-md">
-                        <img
-                          src={heroSecondaryProduct.image_url || editorialImages.heroSecondary}
-                          alt={heroSecondaryProduct.name || "Уходовая косметика YUVEMA"}
-                          className="h-[188px] w-full rounded-[1.2rem] object-cover"
-                        />
-                        <div className="px-1 pb-1 pt-4">
+                      <div className="mt-auto rounded-[1.7rem] border border-white/85 bg-white/92 p-5 shadow-soft-md">
+                        <div className="rounded-[1.3rem] bg-[linear-gradient(145deg,rgba(255,255,255,0.96),rgba(244,237,229,0.86))] px-4 py-5">
                           <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                             {heroSecondaryProduct.category || "Очищение"}
                           </p>
                           <p className="mt-2 font-serif text-[1.45rem] leading-[1.02] text-stone">
                             {heroSecondaryProduct.name}
                           </p>
-                          <p className="mt-2 text-sm text-stone/74">
-                            {formatPrice(heroSecondaryProduct.price)}
+                          <p className="mt-3 text-sm leading-relaxed text-stone/74">
+                            {heroSecondaryProduct.short_description}
                           </p>
+                        </div>
+                        <div className="mt-4 flex items-center justify-between text-sm text-stone">
+                          <span>{formatPrice(heroSecondaryProduct.price)}</span>
+                          <span className="text-muted-foreground">{heroSecondaryProduct.volume}</span>
                         </div>
                       </div>
                     </div>
 
                     <div className="flex flex-col gap-4">
-                      <div className="relative flex-1 overflow-hidden rounded-[2.15rem] border border-white/85 bg-white/92 shadow-soft-lg">
-                        <img
-                          src={heroMainProduct.image_url || editorialImages.heroPrimary}
-                          alt={heroMainProduct.name || "Профессиональная косметика YUVEMA"}
-                          className="h-[438px] w-full object-cover"
-                        />
-                        <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,rgba(255,255,255,0),rgba(255,252,248,0.98))] px-5 pb-5 pt-16">
-                          <p className="text-[10px] uppercase tracking-[0.22em] text-[#7D6852]">
-                            {heroMainProduct.category || "Профессиональный уход"}
-                          </p>
-                          <div className="mt-2 flex items-end justify-between gap-3">
+                      <div className="relative flex-1 overflow-hidden rounded-[2.15rem] border border-white/85 bg-white/92 p-5 shadow-soft-lg">
+                        <div className="absolute inset-0 hero-marble-backdrop opacity-55" />
+                        <div className="relative flex h-full flex-col justify-between rounded-[1.6rem] border border-white/75 bg-[rgba(255,252,248,0.7)] p-6 backdrop-blur-[1px]">
+                          <div className="flex items-start justify-between gap-3">
                             <div>
-                              <p className="font-serif text-[1.55rem] leading-[1.02] text-stone">
+                              <p className="text-[10px] uppercase tracking-[0.22em] text-[#7D6852]">
+                                {heroMainProduct.category || "Профессиональный уход"}
+                              </p>
+                              <p className="mt-3 font-serif text-[2.2rem] leading-[0.98] text-stone">
                                 {heroMainProduct.name}
                               </p>
-                              <p className="mt-2 text-sm text-stone/76">
+                            </div>
+                            <span className="rounded-full border border-[#E1C29A] bg-white/80 px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[#8B6B47]">
+                              YUVEMA
+                            </span>
+                          </div>
+
+                          <div className="my-6 h-px bg-[linear-gradient(90deg,rgba(200,160,106,0.55),rgba(200,160,106,0))]" />
+
+                          <p className="max-w-[20rem] text-sm leading-8 text-stone/76">
+                            {heroMainProduct.short_description || heroMainProduct.effects}
+                          </p>
+
+                          <div className="mt-6 grid grid-cols-2 gap-3">
+                            <div className="rounded-[1.25rem] border border-white/85 bg-white/88 px-4 py-4">
+                              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                                Тип кожи
+                              </p>
+                              <p className="mt-2 text-sm leading-relaxed text-stone">
+                                {(heroMainProduct.skin_types || []).slice(0, 2).join(" • ") || "Все типы"}
+                              </p>
+                            </div>
+                            <div className="rounded-[1.25rem] border border-white/85 bg-white/88 px-4 py-4">
+                              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                                Формат
+                              </p>
+                              <p className="mt-2 text-sm leading-relaxed text-stone">
+                                {heroMainProduct.volume}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="mt-6 flex items-end justify-between gap-3">
+                            <div>
+                              <p className="text-[10px] uppercase tracking-[0.22em] text-[#7D6852]">
+                                Стоимость
+                              </p>
+                              <p className="mt-2 font-serif text-[1.7rem] leading-none text-stone">
                                 {formatPrice(heroMainProduct.price)}
                               </p>
                             </div>
-                            <span className="pb-1 text-sm text-muted-foreground">
-                              {heroMainProduct.volume}
-                            </span>
+                            <div className="h-20 w-20 rounded-full border border-white/85 bg-[radial-gradient(circle_at_35%_30%,rgba(255,255,255,0.98),rgba(238,227,214,0.88))] shadow-soft" />
                           </div>
                         </div>
                       </div>
@@ -281,16 +323,21 @@ export default function Home() {
                           <MapPin className="h-3.5 w-3.5 text-primary" />
                           {siteConfig.city}
                         </div>
-                        <div className="mt-3 flex items-end justify-between gap-4">
-                          <div>
-                            <p className="font-serif text-[1.32rem] leading-[1.05] text-stone">
-                              {heroAccentProduct.name}
-                            </p>
-                            <p className="mt-2 text-sm leading-relaxed text-stone/76">
-                              {heroAccentProduct.volume}
-                            </p>
+                        <div className="mt-3 grid grid-cols-[1fr_auto] items-end gap-4">
+                          <p className="text-[10px] uppercase tracking-[0.22em] text-[#7D6852]">
+                            {heroAccentProduct.category || "Акцент ухода"}
+                          </p>
+                          <div className="col-span-2 flex items-end justify-between gap-4">
+                            <div>
+                              <p className="font-serif text-[1.32rem] leading-[1.05] text-stone">
+                                {heroAccentProduct.name}
+                              </p>
+                              <p className="mt-2 text-sm leading-relaxed text-stone/76">
+                                {heroAccentProduct.short_description || heroAccentProduct.volume}
+                              </p>
+                            </div>
+                            <p className="text-sm text-stone">{formatPrice(heroAccentProduct.price)}</p>
                           </div>
-                          <p className="text-sm text-stone">{formatPrice(heroAccentProduct.price)}</p>
                         </div>
                       </div>
                     </div>

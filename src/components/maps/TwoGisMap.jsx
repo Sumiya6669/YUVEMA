@@ -32,6 +32,14 @@ function buildMapHtml() {
         border: 2px solid rgba(255, 255, 255, 0.95);
         box-shadow: 0 10px 18px rgba(126, 98, 71, 0.24);
       }
+
+      .leaflet-marker-icon:not(.yuvema-marker),
+      .leaflet-marker-shadow,
+      .leaflet-overlay-pane svg,
+      .leaflet-pane img[src*="marker"],
+      .leaflet-pane img[src*="poi"] {
+        display: none !important;
+      }
     </style>
   </head>
   <body>
@@ -47,7 +55,8 @@ function buildMapHtml() {
             zoom: ${zoom},
             scrollWheelZoom: false,
             zoomControl: true,
-            fullscreenControl: false
+            fullscreenControl: false,
+            attributionControl: false
           });
 
           var icon = window.DG.divIcon({
