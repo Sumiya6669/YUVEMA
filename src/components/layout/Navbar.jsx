@@ -1,21 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
-import { Heart, LayoutDashboard, MapPin, Menu, Search, ShoppingBag, User, X } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import {
+  Heart,
+  LayoutDashboard,
+  MapPin,
+  Menu,
+  Search,
+  ShoppingBag,
+  User,
+  X,
+} from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import BrandMark from "@/components/branding/BrandMark";
 import { navigationLinks, siteConfig } from "@/config/site";
 import { useAuth } from "@/lib/AuthContext";
+import { buildAuthUrl } from "@/lib/authModal";
 import { apiClient } from "@/services/api/client";
 
 const toolbarItems = [
   { to: "/catalog", icon: Search, hidden: true },
   { to: "/wishlist", icon: Heart },
   { to: "/cart", icon: ShoppingBag },
-  { to: "/account", icon: User },
 ];
 
 export default function Navbar() {
+  const navigate = useNavigate();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -44,6 +54,18 @@ export default function Navbar() {
   }, [location.pathname]);
 
   const cartCount = cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+  const accountHref = isAdmin ? "/admin" : "/account";
+
+  function openAuth(mode = "login", nextPath = "/account") {
+    navigate(
+      buildAuthUrl({
+        pathname: location.pathname,
+        search: location.search,
+        mode,
+        nextPath,
+      }),
+    );
+  }
 
   return (
     <>
@@ -84,12 +106,12 @@ export default function Navbar() {
             {isAdmin && (
               <Link
                 to="/admin"
-                className="group relative pb-1 text-[11px] uppercase tracking-[0.22em] text-[#8A6B48] transition-colors duration-300 hover:text-stone"
+                className="inline-flex items-center rounded-full border border-[#DEC4A0] bg-[#F7EBDD] px-4 py-2 text-[11px] uppercase tracking-[0.16em] text-[#6B533B] shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-[#CFA671] hover:bg-[#F2E2CE]"
               >
                 Админка
-                <span className="absolute inset-x-0 -bottom-0.5 h-px origin-center rounded-full bg-gradient-to-r from-transparent via-gold to-transparent transition-transform duration-300 group-hover:scale-x-100" />
               </Link>
             )}
+
             {navigationLinks.map((link) => {
               const active = location.pathname === link.path;
 
@@ -105,7 +127,7 @@ export default function Navbar() {
                 >
                   {link.label}
                   <span
-                    className={`absolute inset-x-0 -bottom-0.5 h-px origin-center rounded-full bg-gradient-to-r from-transparent via-gold to-transparent transition-transform duration-300 ${
+                    className={`absolute inset-x-0 -bottom-0.5 h-px origin-center rounded-full bg-gradient-to-r from-transparent via-[#C8A36E] to-transparent transition-transform duration-300 ${
                       active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                     }`}
                   />
@@ -122,9 +144,6 @@ export default function Navbar() {
                 <Link
                   key={to}
                   to={to}
-                  title={
-                    to === "/account" ? (isAuthenticated ? "Аккаунт" : "Войти") : undefined
-                  }
                   className={`relative flex h-11 w-11 items-center justify-center rounded-full border border-transparent bg-white/70 text-stone/75 shadow-soft transition-all duration-300 hover:border-[#E7D7C5] hover:bg-white hover:text-stone hover:shadow-soft-md ${
                     hidden ? "hidden sm:flex" : ""
                   }`}
@@ -138,6 +157,28 @@ export default function Navbar() {
                 </Link>
               );
             })}
+
+            {isAuthenticated ? (
+              <Link
+                to={accountHref}
+                title={isAdmin ? "Открыть админку" : "Аккаунт"}
+                className="relative flex h-11 w-11 items-center justify-center rounded-full border border-transparent bg-white/70 text-stone/75 shadow-soft transition-all duration-300 hover:border-[#E7D7C5] hover:bg-white hover:text-stone hover:shadow-soft-md"
+              >
+                {isAdmin ? (
+                  <LayoutDashboard className="h-[18px] w-[18px]" strokeWidth={1.45} />
+                ) : (
+                  <User className="h-[18px] w-[18px]" strokeWidth={1.45} />
+                )}
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => openAuth("login")}
+                className="relative flex h-11 w-11 items-center justify-center rounded-full border border-transparent bg-white/70 text-stone/75 shadow-soft transition-all duration-300 hover:border-[#E7D7C5] hover:bg-white hover:text-stone hover:shadow-soft-md"
+              >
+                <User className="h-[18px] w-[18px]" strokeWidth={1.45} />
+              </button>
+            )}
 
             <button
               type="button"
@@ -229,6 +270,20 @@ export default function Navbar() {
                     <LayoutDashboard className="h-4 w-4" />
                     Открыть админку
                   </Link>
+                )}
+
+                {!isAuthenticated && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileOpen(false);
+                      openAuth("login");
+                    }}
+                    className="inline-flex items-center gap-3 rounded-full border border-[#DFC4A2] bg-[#F7EBDD] px-5 py-3 text-[11px] uppercase tracking-[0.18em] text-[#664F39] shadow-soft"
+                  >
+                    <User className="h-4 w-4" />
+                    Войти
+                  </button>
                 )}
               </div>
             </motion.div>

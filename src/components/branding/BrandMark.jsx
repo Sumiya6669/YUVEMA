@@ -11,8 +11,8 @@ export default function BrandMark({ compact = false, className = "", tone = "gol
     <div className={cn("inline-flex items-center", className)}>
       <span
         className={cn(
-          "font-sans font-semibold uppercase leading-none tracking-[0.24em]",
-          compact ? "text-[0.94rem]" : "text-[1.12rem]",
+          "font-sans font-semibold uppercase leading-none tracking-[0.18em]",
+          compact ? "text-[1rem]" : "text-[1.24rem]",
           toneClass,
         )}
       >

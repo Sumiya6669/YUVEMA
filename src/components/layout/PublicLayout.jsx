@@ -1,5 +1,6 @@
 import React from "react";
 import AiAssistantWidget, { AiAssistantProvider } from "@/components/ai/AiAssistantWidget";
+import AuthDialog from "@/components/auth/AuthDialog";
 import { Outlet } from "react-router-dom";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
@@ -13,6 +14,7 @@ export default function PublicLayout() {
           <Outlet />
         </main>
         <Footer />
+        <AuthDialog />
         <AiAssistantWidget />
       </div>
     </AiAssistantProvider>

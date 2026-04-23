@@ -36,12 +36,43 @@ async function getProfile(userId) {
   return mapProfile(data);
 }
 
+async function getServerResolvedProfile() {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session?.access_token) {
+    return null;
+  }
+
+  const response = await fetch("/api/auth-profile", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${session.access_token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to resolve auth profile");
+  }
+
+  return response.json();
+}
+
 async function getUserRecord() {
   const user = await getCurrentSessionUser(supabase);
 
   if (!user) {
     return null;
   }
+
+  try {
+    const serverProfile = await getServerResolvedProfile();
+
+    if (serverProfile?.id) {
+      return serverProfile;
+    }
+  } catch {}
 
   const profile = await getProfile(user.id);
 
@@ -183,7 +214,7 @@ export const apiClient = {
 
     redirectToLogin(returnTo = window.location.pathname) {
       const next = encodeURIComponent(returnTo);
-      window.location.href = `/account?next=${next}`;
+      window.location.href = `/?auth=login&next=${next}`;
     },
   },
 
@@ -199,4 +230,3 @@ export const apiClient = {
     ContactMessage,
   },
 };
-

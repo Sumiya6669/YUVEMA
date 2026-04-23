@@ -1,7 +1,14 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { ArrowRight, MapPin, ShieldCheck, Sparkles, Stethoscope, Truck } from "lucide-react";
+import {
+  ArrowRight,
+  MapPin,
+  ShieldCheck,
+  Sparkles,
+  Stethoscope,
+  Truck,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAiWidget } from "@/components/ai/AiAssistantWidget";
 import ProductCard from "@/components/product/ProductCard";
@@ -20,27 +27,27 @@ const valueCards = [
   {
     icon: ShieldCheck,
     title: "Профессиональный ассортимент",
-    text: "Только понятные формулы и позиции, которые уместно рекомендовать клиенту.",
+    text: "Только понятные формулы и сильные позиции, которые уместно рекомендовать клиенту.",
   },
   {
     icon: Stethoscope,
     title: "Экспертная консультация",
-    text: "Подбор ухода встроен в опыт покупки и не превращён в отдельное шоу.",
+    text: "Подбор ухода встроен в опыт покупки и не выглядит отдельным демонстрационным модулем.",
   },
   {
     icon: Truck,
     title: "Деликатный сервис",
-    text: "Упаковка, доставка и коммуникация собраны в спокойный премиальный сценарий.",
+    text: "Упаковка, доставка и сопровождение собраны в спокойный premium-сценарий без визуального шума.",
   },
 ];
 
 const editorialImages = {
   heroPrimary:
-    "https://images.unsplash.com/photo-1626784215021-2e39ccf971cd?auto=format&fit=crop&w=960&q=80",
+    "https://images.unsplash.com/photo-1625772452859-1c03d5bf1137?auto=format&fit=crop&w=1200&q=80",
   heroSecondary:
-    "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=720&q=80",
+    "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=900&q=80",
   heroDetail:
-    "https://images.unsplash.com/photo-1612817288484-6f916006741a?auto=format&fit=crop&w=720&q=80",
+    "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=900&q=80",
   b2b:
     "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=900&q=80",
 };
@@ -69,25 +76,28 @@ export default function Home() {
 
   return (
     <div className="overflow-x-hidden">
-      <section className="relative isolate overflow-hidden border-b border-[#EEE2D6] bg-marble-rich pb-14 pt-8 sm:pb-18 lg:pb-20">
-        <div className="absolute left-[-120px] top-24 h-72 w-72 rounded-full bg-[#F2DED6]/45 blur-[90px]" />
-        <div className="absolute right-[-80px] top-8 h-72 w-72 rounded-full bg-[#EBDCC4]/45 blur-[90px]" />
+      <section className="relative isolate overflow-hidden border-b border-[#EEE2D6] bg-[#FBF7F1] pb-16 pt-10 lg:pb-20">
+        <div className="pointer-events-none absolute inset-0 opacity-80">
+          <div className="hero-marble-backdrop absolute right-[-8%] top-10 h-[82%] w-[64%] rounded-[3rem] blur-[0.3px]" />
+          <div className="absolute left-[-80px] top-24 h-72 w-72 rounded-full bg-[#F3E3D7]/55 blur-[95px]" />
+          <div className="absolute right-[-30px] top-14 h-72 w-72 rounded-full bg-[#EEE1CA]/55 blur-[100px]" />
+        </div>
 
-        <div className="mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl gap-12 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:px-12">
+        <div className="relative mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl gap-12 px-6 lg:grid-cols-[0.88fr_1.12fr] lg:items-center lg:px-12">
           <motion.div
             initial={{ opacity: 0, x: -24 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-10 flex flex-col justify-center pt-14"
+            className="z-10 flex flex-col justify-center pt-14"
           >
             <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/85 bg-white/78 px-4 py-2 shadow-soft">
               <span className="h-1.5 w-1.5 rounded-full bg-[#C8A36E]" />
               <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                профессиональный уход • продуманная витрина
+                профессиональный уход • брендовая витрина
               </span>
             </div>
 
-            <h1 className="mt-7 max-w-3xl font-serif text-[3rem] font-medium leading-[0.95] text-stone md:text-[4.2rem] lg:text-[4.9rem]">
+            <h1 className="mt-7 max-w-3xl font-serif text-[3rem] font-medium leading-[0.94] text-stone md:text-[4.15rem] lg:text-[4.7rem]">
               Профессиональный уход
               <br />
               <span className="gold-shimmer">с деликатной подачей</span>
@@ -95,9 +105,9 @@ export default function Home() {
               настоящего бренда
             </h1>
 
-            <p className="mt-6 max-w-xl text-[15px] leading-8 text-stone/75">
-              YUVEMA объединяет каталог, консультацию и B2B-сервис в спокойный и визуально
-              чистый опыт, которому хочется доверять.
+            <p className="mt-6 max-w-xl text-[15px] leading-8 text-stone/78">
+              YUVEMA объединяет каталог, консультацию и B2B-сервис в спокойный и эстетичный
+              продуктовый опыт, которому хочется доверять и в который хочется возвращаться.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -126,20 +136,22 @@ export default function Home() {
               ].map((item) => (
                 <div
                   key={item.title}
-                  className="rounded-[1.45rem] border border-white/80 bg-white/80 px-5 py-4 shadow-soft"
+                  className="rounded-[1.45rem] border border-white/80 bg-white/84 px-5 py-4 shadow-soft"
                 >
-                  <p className="font-serif text-[1.55rem] leading-none text-stone">{item.title}</p>
-                  <p className="mt-2 text-sm leading-relaxed text-stone/70">{item.text}</p>
+                  <p className="font-serif text-[1.45rem] leading-none text-stone">{item.title}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-stone/72">{item.text}</p>
                 </div>
               ))}
             </div>
 
-            <div className="mt-8 overflow-hidden rounded-[2rem] border border-[#EDE1D4] bg-white/82 p-3 shadow-soft-lg lg:hidden">
-              <img
-                src={editorialImages.heroPrimary}
-                alt="Премиальная уходовая косметика YUVEMA"
-                className="h-[420px] w-full rounded-[1.6rem] object-cover"
-              />
+            <div className="mt-8 overflow-hidden rounded-[2rem] border border-[#EDE1D4] bg-white/88 p-3 shadow-soft-lg lg:hidden">
+              <div className="hero-marble-card overflow-hidden rounded-[1.6rem] p-3">
+                <img
+                  src={editorialImages.heroPrimary}
+                  alt="Премиальная уходовая косметика YUVEMA"
+                  className="h-[420px] w-full rounded-[1.35rem] object-cover"
+                />
+              </div>
             </div>
           </motion.div>
 
@@ -149,69 +161,65 @@ export default function Home() {
             transition={{ duration: 0.95, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
             className="relative hidden lg:block"
           >
-            <div className="relative mx-auto h-[700px] max-w-[640px]">
-              <div className="absolute right-0 top-6 h-[620px] w-[440px] rounded-[2.5rem] border border-white/85 bg-white/76 p-4 shadow-soft-xl">
-                <div className="hero-arch marble-stage h-full overflow-hidden rounded-[2.2rem]">
-                  <img
-                    src={editorialImages.heroPrimary}
-                    alt="Премиальная уходовая косметика YUVEMA"
-                    className="h-full w-full object-cover"
-                  />
+            <div className="hero-marble-card relative mx-auto max-w-[660px] rounded-[2.8rem] border border-white/80 p-5 shadow-soft-xl">
+              <div className="grid gap-4 lg:grid-cols-[0.72fr_1.02fr]">
+                <div className="flex flex-col gap-4">
+                  <div className="overflow-hidden rounded-[1.9rem] border border-white/80 bg-white/88 p-3 shadow-soft-md">
+                    <img
+                      src={editorialImages.heroSecondary}
+                      alt="Уходовая косметика на светлом мраморе"
+                      className="h-[278px] w-full rounded-[1.45rem] object-cover"
+                    />
+                    <div className="px-2 pb-2 pt-4">
+                      <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                        Эстетика ухода
+                      </p>
+                      <p className="mt-2 text-sm leading-relaxed text-stone/78">
+                        Светлая композиция, чистый продукт и никакого тёмного тяжёлого пятна в первом экране.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="rounded-[1.9rem] border border-white/80 bg-white/88 p-5 shadow-soft-md">
+                    <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                      Почерк бренда
+                    </p>
+                    <p className="mt-4 font-serif text-[1.95rem] leading-[1.02] text-stone">
+                      Мрамор, мягкий свет, продукт и чёткая premium-композиция без визуального шума.
+                    </p>
+                  </div>
                 </div>
 
-                <div className="absolute inset-x-10 bottom-10 rounded-[1.6rem] border border-white/80 bg-white/82 px-6 py-5 shadow-soft-lg backdrop-blur-md">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                    Почерк бренда
-                  </p>
-                  <p className="mt-3 font-serif text-[1.8rem] leading-[1.02] text-stone">
-                    Спокойная эстетика бренда и логика профессионального ухода.
-                  </p>
-                </div>
-              </div>
+                <div className="space-y-4">
+                  <div className="overflow-hidden rounded-[2.2rem] border border-white/85 bg-white/88 p-3 shadow-soft-lg">
+                    <div className="hero-marble-stage rounded-[1.85rem] p-3">
+                      <img
+                        src={editorialImages.heroPrimary}
+                        alt="Профессиональная косметика YUVEMA"
+                        className="h-[498px] w-full rounded-[1.55rem] object-cover"
+                      />
+                    </div>
+                  </div>
 
-              <div className="animate-float absolute left-2 top-20 w-[238px] rounded-[1.9rem] border border-[#EEE2D6] bg-[#FFFCF8]/92 p-3 shadow-soft-lg">
-                <div className="overflow-hidden rounded-[1.5rem]">
-                  <img
-                    src={editorialImages.heroSecondary}
-                    alt="Косметология и эстетика ухода"
-                    className="h-[270px] w-full object-cover"
-                  />
-                </div>
-                <div className="px-2 pb-2 pt-4">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                    Эстетика ухода
-                  </p>
-                  <p className="mt-2 text-sm leading-relaxed text-stone/80">
-                    Визуально чистый уход без ощущения дешёвого люкса.
-                  </p>
-                </div>
-              </div>
+                  <div className="grid grid-cols-[0.92fr_1.08fr] gap-4">
+                    <div className="overflow-hidden rounded-[1.7rem] border border-white/80 bg-white/88 p-3 shadow-soft-md">
+                      <img
+                        src={editorialImages.heroDetail}
+                        alt="Сыворотка YUVEMA в editorial-композиции"
+                        className="h-[178px] w-full rounded-[1.3rem] object-cover"
+                      />
+                    </div>
 
-              <div className="animate-float-delay absolute bottom-[88px] left-[72px] w-[270px] rounded-[1.7rem] border border-white/85 bg-white/84 p-5 shadow-soft-lg backdrop-blur-md">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FBF0E3] shadow-soft">
-                    <Sparkles className="h-4 w-4 text-[#A88152]" strokeWidth={1.6} />
-                  </span>
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                    Консультация встроена в сайт
-                  </p>
-                </div>
-                <p className="mt-4 font-serif text-[1.75rem] leading-[1.02] text-stone">
-                  Подбор работает как сервис бренда, а не как отдельная витрина.
-                </p>
-              </div>
-
-              <div className="absolute bottom-10 right-8 w-[180px] rounded-[1.5rem] border border-white/85 bg-white/82 p-3 shadow-soft-lg">
-                <div className="overflow-hidden rounded-[1.15rem]">
-                  <img
-                    src={editorialImages.heroDetail}
-                    alt="Текстуры ухода и premium still life"
-                    className="h-[180px] w-full object-cover"
-                  />
-                </div>
-                <div className="mt-3 flex items-start gap-2 text-sm text-stone/75">
-                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                  {siteConfig.city}
+                    <div className="rounded-[1.7rem] border border-white/80 bg-white/88 p-5 shadow-soft-md">
+                      <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                        <MapPin className="h-3.5 w-3.5 text-primary" />
+                        {siteConfig.city}
+                      </div>
+                      <p className="mt-4 font-serif text-[1.65rem] leading-[1.04] text-stone">
+                        Консультация встроена в сайт и помогает довести клиента до уверенного выбора.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

@@ -25,7 +25,7 @@ export default function RequireRole({ roles = [], children }) {
 
   if (!isAuthenticated) {
     const next = `${location.pathname}${location.search}`;
-    return <Navigate replace to={`/account?next=${encodeURIComponent(next)}`} />;
+    return <Navigate replace to={`/?auth=login&next=${encodeURIComponent(next)}`} />;
   }
 
   if (roles.length > 0 && !roles.includes(user?.role)) {

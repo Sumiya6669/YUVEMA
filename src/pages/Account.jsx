@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import {
@@ -9,13 +9,10 @@ import {
   ShoppingCart,
   User,
 } from "lucide-react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
+import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useAiWidget } from "@/components/ai/AiAssistantWidget";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/AuthContext";
 import { apiClient } from "@/services/api/client";
 
@@ -35,24 +32,9 @@ const roleLabels = {
 };
 
 export default function Account() {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { openWidget } = useAiWidget();
-  const { user, isAuthenticated, isLoadingAuth, signIn, signUp, logout } =
-    useAuth();
-  const [mode, setMode] = useState("login");
-  const [submitting, setSubmitting] = useState(false);
-  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
-  const [registerForm, setRegisterForm] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-  });
-
-  const nextPath = useMemo(
-    () => searchParams.get("next") || "/account",
-    [searchParams],
-  );
+  const { user, isAuthenticated, isLoadingAuth, logout } = useAuth();
   const adminDenied = searchParams.get("adminDenied") === "1";
 
   const { data: orders = [] } = useQuery({
@@ -67,46 +49,6 @@ export default function Account() {
     initialData: [],
   });
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    setSubmitting(true);
-
-    try {
-      const signedUser = await signIn(loginForm);
-      toast.success("Вы вошли в аккаунт");
-      if ((nextPath === "/account" || nextPath === "/") && signedUser?.role === "admin") {
-        navigate("/admin");
-      } else {
-        navigate(nextPath);
-      }
-    } catch (error) {
-      toast.error(error.message || "Не удалось войти");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleRegister = async (event) => {
-    event.preventDefault();
-    setSubmitting(true);
-
-    try {
-      await signUp(registerForm);
-      toast.success(
-        "Аккаунт создан. Если включено подтверждение email, подтвердите адрес и войдите.",
-      );
-      setMode("login");
-      setLoginForm({
-        email: registerForm.email,
-        password: registerForm.password,
-      });
-    } catch (error) {
-      toast.error(error.message || "Не удалось создать аккаунт");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
   if (isLoadingAuth) {
     return (
       <div className="mx-auto flex min-h-[60vh] max-w-5xl items-center justify-center px-6 py-12">
@@ -119,176 +61,7 @@ export default function Account() {
   }
 
   if (!isAuthenticated) {
-    return (
-      <div className="mx-auto max-w-5xl px-6 py-12 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="rounded-3xl bg-marble p-8 md:p-12">
-            <p className="mb-4 text-xs uppercase tracking-[0.3em] text-primary">
-              Личный кабинет
-            </p>
-            <h1 className="mb-4 font-serif text-4xl font-light text-stone">
-              Управляйте заказами и B2B-доступом из одного аккаунта
-            </h1>
-            <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
-              После входа вы сможете отслеживать заказы, подавать B2B-заявку,
-              видеть персональные условия и быстро возвращаться к избранным
-              продуктам.
-            </p>
-
-            <div className="mt-10 grid gap-4 md:grid-cols-3">
-              {[
-                "История заказов и статусы доставки",
-                "B2B-заявка и оптовые цены после одобрения",
-                "Быстрый доступ к каталогу, корзине и избранному",
-              ].map((item) => (
-                <div
-                  key={item}
-                  className="rounded-2xl border border-white/70 bg-white/70 p-4 text-sm text-muted-foreground"
-                >
-                  {item}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="rounded-3xl border bg-white p-8 shadow-soft">
-            {adminDenied && (
-              <div className="mb-6 rounded-[1.4rem] border border-[#E8D7C0] bg-[#FBF1E4] px-5 py-4 text-sm leading-relaxed text-[#6C543B]">
-                В этот раздел допускаются только администраторы. Если у вас админ-аккаунт,
-                войдите под ним, и система автоматически переведёт вас в `/admin`.
-              </div>
-            )}
-
-            <div className="mb-6 flex rounded-full bg-secondary/70 p-1">
-              <button
-                type="button"
-                onClick={() => setMode("login")}
-                className={`flex-1 rounded-full px-4 py-2 text-sm transition-colors ${
-                  mode === "login"
-                    ? "bg-white font-medium text-stone shadow-soft"
-                    : "text-muted-foreground"
-                }`}
-              >
-                Вход
-              </button>
-              <button
-                type="button"
-                onClick={() => setMode("register")}
-                className={`flex-1 rounded-full px-4 py-2 text-sm transition-colors ${
-                  mode === "register"
-                    ? "bg-white font-medium text-stone shadow-soft"
-                    : "text-muted-foreground"
-                }`}
-              >
-                Регистрация
-              </button>
-            </div>
-
-            {mode === "login" ? (
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="login-email">Email</Label>
-                  <Input
-                    id="login-email"
-                    type="email"
-                    required
-                    value={loginForm.email}
-                    onChange={(event) =>
-                      setLoginForm((current) => ({
-                        ...current,
-                        email: event.target.value,
-                      }))
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="login-password">Пароль</Label>
-                  <Input
-                    id="login-password"
-                    type="password"
-                    required
-                    value={loginForm.password}
-                    onChange={(event) =>
-                      setLoginForm((current) => ({
-                        ...current,
-                        password: event.target.value,
-                      }))
-                    }
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  className="h-12 w-full rounded-full"
-                  disabled={submitting}
-                >
-                  {submitting ? "Входим…" : "Войти"}
-                </Button>
-              </form>
-            ) : (
-              <form onSubmit={handleRegister} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="register-name">Имя</Label>
-                  <Input
-                    id="register-name"
-                    required
-                    value={registerForm.fullName}
-                    onChange={(event) =>
-                      setRegisterForm((current) => ({
-                        ...current,
-                        fullName: event.target.value,
-                      }))
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="register-email">Email</Label>
-                  <Input
-                    id="register-email"
-                    type="email"
-                    required
-                    value={registerForm.email}
-                    onChange={(event) =>
-                      setRegisterForm((current) => ({
-                        ...current,
-                        email: event.target.value,
-                      }))
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="register-password">Пароль</Label>
-                  <Input
-                    id="register-password"
-                    type="password"
-                    minLength={8}
-                    required
-                    value={registerForm.password}
-                    onChange={(event) =>
-                      setRegisterForm((current) => ({
-                        ...current,
-                        password: event.target.value,
-                      }))
-                    }
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  className="h-12 w-full rounded-full"
-                  disabled={submitting}
-                >
-                  {submitting ? "Создаём аккаунт…" : "Создать аккаунт"}
-                </Button>
-              </form>
-            )}
-
-            <div className="mt-6 rounded-[1.35rem] border border-[#EEE2D6] bg-[#FFFCF8] px-4 py-4 text-sm leading-relaxed text-muted-foreground">
-              Для входа в админку используйте админ-аккаунт из `.env.local`. После входа
-              администратор автоматически попадает в `/admin`.
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <Navigate replace to="/?auth=login&next=%2Faccount" />;
   }
 
   return (
