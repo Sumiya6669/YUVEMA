@@ -84,10 +84,6 @@ export default async function handler(request, response) {
       .eq("id", user.id)
       .maybeSingle();
 
-    const isAdminEmail =
-      process.env.ADMIN_EMAIL &&
-      user.email?.toLowerCase() === process.env.ADMIN_EMAIL.toLowerCase();
-
     const nextProfile = {
       id: user.id,
       email: user.email,
@@ -96,8 +92,8 @@ export default async function handler(request, response) {
         user.user_metadata?.full_name ||
         user.email ||
         "Пользователь",
-      role: isAdminEmail ? "admin" : rawProfile?.role || "user",
-      wholesale_approved: isAdminEmail ? true : rawProfile?.wholesale_approved || false,
+      role: rawProfile?.role || "user",
+      wholesale_approved: rawProfile?.wholesale_approved || false,
       company_name: rawProfile?.company_name || "",
       company_bin: rawProfile?.company_bin || "",
       city: rawProfile?.city || "",

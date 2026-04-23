@@ -11,8 +11,7 @@
     "lint": "eslint . --quiet",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit -p ./jsconfig.json",
-    "validate": "npm run lint && npm run build",
-    "bootstrap:admin": "node scripts/bootstrap-admin.mjs"
+    "validate": "npm run lint && npm run build"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

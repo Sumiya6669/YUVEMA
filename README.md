@@ -14,8 +14,7 @@
 3. In Supabase SQL Editor run:
    - `supabase/schema.sql`
    - `supabase/seed.sql`
-4. Create the admin account:
-   `npm run bootstrap:admin`
+4. Create an admin user directly in Supabase Auth and set `role = 'admin'` in `public.profiles`.
 5. Start the app:
    `npm run dev`
 
@@ -40,7 +39,7 @@ ADMIN_PASSWORD=
 2. Run `supabase/schema.sql` and `supabase/seed.sql`.
 3. Add the environment variables from `.env.example` in Vercel.
 4. Deploy the repository to Vercel.
-5. Run `npm run bootstrap:admin` once with the production env vars available.
+5. Create the production admin directly in Supabase Auth and set `role = 'admin'` in `public.profiles`.
 6. Verify:
    - `/api/health`
    - `/api/ai-assistant`

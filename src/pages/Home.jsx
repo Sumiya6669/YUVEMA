@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAiWidget } from "@/components/ai/AiAssistantWidget";
+import heroMarbleTexture from "@/assets/hero-marble.jpg";
 import ProductCard from "@/components/product/ProductCard";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
@@ -52,6 +53,18 @@ function formatPrice(value) {
 
   return `${Number(value).toLocaleString()} ₸`;
 }
+
+const heroBackdropStyle = {
+  backgroundImage: `linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(251, 247, 241, 0.82)), url(${heroMarbleTexture})`,
+  backgroundPosition: "center",
+  backgroundSize: "cover",
+};
+
+const heroPanelStyle = {
+  backgroundImage: `linear-gradient(145deg, rgba(255, 255, 255, 0.8), rgba(251, 247, 241, 0.72)), url(${heroMarbleTexture})`,
+  backgroundPosition: "center",
+  backgroundSize: "cover",
+};
 
 export default function Home() {
   const { openWidget } = useAiWidget();
@@ -108,7 +121,7 @@ export default function Home() {
     <div className="overflow-x-hidden">
       <section className="relative isolate overflow-hidden border-b border-[#EEE2D6] bg-[#FBF7F1] pb-16 pt-10 lg:pb-20">
         <div className="pointer-events-none absolute inset-0 opacity-90">
-          <div className="hero-marble-backdrop absolute inset-0 opacity-80" />
+          <div className="absolute inset-0 opacity-90" style={heroBackdropStyle} />
           <div className="absolute inset-x-0 top-0 h-[54%] bg-[linear-gradient(180deg,rgba(255,255,255,0.65),rgba(251,247,241,0))]" />
           <div className="absolute left-[-90px] top-24 h-72 w-72 rounded-full bg-[#F3E3D7]/55 blur-[100px]" />
           <div className="absolute right-[-30px] top-14 h-72 w-72 rounded-full bg-[#EEE1CA]/55 blur-[105px]" />
@@ -124,7 +137,7 @@ export default function Home() {
             <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/85 bg-white/78 px-4 py-2 shadow-soft">
               <span className="h-1.5 w-1.5 rounded-full bg-[#C8A36E]" />
               <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                профессиональный уход • брендовая витрина
+                экспертный уход • премиальный сервис
               </span>
             </div>
 
@@ -138,7 +151,7 @@ export default function Home() {
 
             <p className="mt-6 max-w-xl text-[15px] leading-8 text-stone/84">
               YUVEMA объединяет каталог, консультацию и B2B-сервис в спокойный продуктовый опыт,
-              где премиальная подача держится на чистой композиции, грамотном ассортименте и
+              где премиальная подача держится на реальном ассортименте, сильных формулах и
               понятном выборе.
             </p>
 
@@ -178,9 +191,9 @@ export default function Home() {
 
             <div className="mt-8 overflow-hidden rounded-[2rem] border border-[#EDE1D4] bg-white/88 p-3 shadow-soft-lg lg:hidden">
               <div className="hero-marble-shell overflow-hidden rounded-[1.6rem] border border-white/80 p-3">
-                <div className="hero-marble-stage rounded-[1.35rem] p-6">
+                <div className="rounded-[1.35rem] p-6" style={heroPanelStyle}>
                   <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                    Мраморная композиция
+                    Выбор эксперта
                   </p>
                   <p className="mt-4 font-serif text-[1.9rem] leading-[1.02] text-stone">
                     {heroMainProduct.name}
@@ -225,20 +238,27 @@ export default function Home() {
             className="relative hidden lg:block"
           >
             <div className="relative mx-auto max-w-[680px]">
-              <div className="hero-marble-backdrop absolute inset-3 rounded-[3rem] opacity-95 shadow-soft-xl" />
+              <div
+                className="absolute inset-3 rounded-[3rem] opacity-95 shadow-soft-xl"
+                style={heroBackdropStyle}
+              />
               <div className="hero-marble-shell relative rounded-[3rem] border border-white/80 p-5 shadow-soft-xl">
-                <div className="hero-marble-stage relative min-h-[655px] overflow-hidden rounded-[2.55rem] border border-white/80 p-8">
+                <div
+                  className="relative min-h-[655px] overflow-hidden rounded-[2.55rem] border border-white/80 p-8"
+                  style={heroPanelStyle}
+                >
                   <div className="grid h-full gap-4 lg:grid-cols-[0.42fr_0.58fr]">
                     <div className="flex flex-col gap-4">
                       <div className="rounded-[1.7rem] border border-white/85 bg-white/94 p-5 shadow-soft-md">
                         <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                          Светлый мрамор
+                          Подбор ухода
                         </p>
                         <p className="mt-3 font-serif text-[1.78rem] leading-[1.02] text-stone">
-                          Чистая продуктовая подача без тяжёлого визуального шума
+                          Спокойный выбор для кожи, которой нужен результат
                         </p>
                         <p className="mt-3 text-sm leading-relaxed text-stone/76">
-                          Мягкий свет, живой товар и аккуратные карточки вместо декоративной перегрузки.
+                          Каталог, консультация и сервис собраны в один деликатный сценарий, где
+                          легко понять, что подойдёт именно вам.
                         </p>
                       </div>
 
@@ -263,7 +283,7 @@ export default function Home() {
 
                     <div className="flex flex-col gap-4">
                       <div className="relative flex-1 overflow-hidden rounded-[2.15rem] border border-white/85 bg-white/92 p-5 shadow-soft-lg">
-                        <div className="absolute inset-0 hero-marble-backdrop opacity-55" />
+                        <div className="absolute inset-0 opacity-45" style={heroBackdropStyle} />
                         <div className="relative flex h-full flex-col justify-between rounded-[1.6rem] border border-white/75 bg-[rgba(255,252,248,0.7)] p-6 backdrop-blur-[1px]">
                           <div className="flex items-start justify-between gap-3">
                             <div>

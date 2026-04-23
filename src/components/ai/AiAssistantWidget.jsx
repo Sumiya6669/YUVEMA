@@ -304,7 +304,7 @@ export default function AiAssistantWidget() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 18, scale: 0.98 }}
               transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-x-3 bottom-3 top-auto flex h-[72vh] max-h-[700px] flex-col overflow-hidden rounded-[2rem] border border-[#E9DDD0] bg-[#FFFCF8]/96 shadow-[0_36px_90px_rgba(156,123,102,0.22)] backdrop-blur-xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:h-[620px] sm:max-h-[72vh] sm:w-[392px]"
+              className="absolute inset-x-3 bottom-3 top-auto flex h-[64vh] max-h-[620px] flex-col overflow-hidden rounded-[2rem] border border-[#E9DDD0] bg-[#FFFCF8]/96 shadow-[0_36px_90px_rgba(156,123,102,0.22)] backdrop-blur-xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:h-[560px] sm:max-h-[68vh] sm:w-[392px]"
             >
               <div className="border-b border-[#EEE3D6] px-5 py-4">
                 <div className="flex items-start justify-between gap-4">
@@ -497,7 +497,7 @@ export default function AiAssistantWidget() {
                         value={draft}
                         onChange={(event) => setDraft(event.target.value)}
                         placeholder={scenario.placeholder}
-                        className="min-h-[72px] w-full resize-none border-0 bg-transparent px-1 py-1 text-sm leading-relaxed text-stone outline-none placeholder:text-muted-foreground/75"
+                        className="min-h-[64px] w-full resize-none border-0 bg-transparent px-1 py-1 text-sm leading-relaxed text-stone outline-none placeholder:text-muted-foreground/75"
                       />
 
                       <div className="mt-3 flex items-center justify-between gap-3">

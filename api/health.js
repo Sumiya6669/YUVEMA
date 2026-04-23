@@ -12,7 +12,7 @@ export default function handler(request, response) {
     ),
     serviceRoleConfigured: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY),
     openAiConfigured: Boolean(process.env.OPENAI_API_KEY),
-    adminBootstrapConfigured: Boolean(
+    adminCredentialsConfigured: Boolean(
       process.env.ADMIN_EMAIL && process.env.ADMIN_PASSWORD,
     ),
   });

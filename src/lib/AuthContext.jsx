@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     let isMounted = true;
 
-    const bootstrap = async () => {
+    const initializeAuth = async () => {
       try {
         const {
           data: { session: initialSession },
@@ -52,13 +52,25 @@ export const AuthProvider = ({ children }) => {
       }
     };
 
-    const { data } = apiClient.auth.onAuthStateChange(async (_event, nextSession) => {
+    const { data } = apiClient.auth.onAuthStateChange((_event, nextSession) => {
+      if (!isMounted) {
+        return;
+      }
+
       setSession(nextSession);
-      await refreshUser(nextSession);
-      setIsLoadingAuth(false);
+
+      queueMicrotask(() => {
+        refreshUser(nextSession)
+          .catch(() => null)
+          .finally(() => {
+            if (isMounted) {
+              setIsLoadingAuth(false);
+            }
+          });
+      });
     });
 
-    bootstrap();
+    initializeAuth();
 
     return () => {
       isMounted = false;
