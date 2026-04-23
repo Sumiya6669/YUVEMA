@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { siteConfig } from "@/config/site";
 
 export const orderStatusLabels = {
   pending: "Ожидает",
@@ -25,6 +26,11 @@ export const applicationStatusLabels = {
   pending: "На рассмотрении",
   approved: "Одобрена",
   rejected: "Отклонена",
+};
+
+export const fulfillmentMethodLabels = {
+  delivery: "Доставка",
+  pickup: "Самовывоз",
 };
 
 export function formatMoney(value) {
@@ -91,4 +97,11 @@ export function getApplicationStatusClass(status) {
   };
 
   return classes[status] || classes.pending;
+}
+
+export function getFulfillmentMethod(order) {
+  const address = String(order?.shipping_address || "").trim().toLowerCase();
+  const pickupAddress = String(siteConfig.location || "").trim().toLowerCase();
+
+  return address && address === pickupAddress ? "pickup" : "delivery";
 }

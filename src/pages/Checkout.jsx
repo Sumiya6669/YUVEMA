@@ -34,6 +34,7 @@ export default function Checkout() {
     phone: "",
     city: "",
     address: "",
+    deliveryMethod: "delivery",
     payment: "kaspi",
     notes: "",
   });
@@ -64,19 +65,29 @@ export default function Checkout() {
       0,
     );
     const shipping =
-      subtotal > siteConfig.freeShippingThreshold ? 0 : siteConfig.shippingPrice;
+      form.deliveryMethod === "pickup"
+        ? 0
+        : subtotal >= siteConfig.freeShippingThreshold
+          ? 0
+          : siteConfig.shippingPrice;
 
     return {
       subtotal,
       shipping,
       total: subtotal + shipping,
     };
-  }, [cartItems]);
+  }, [cartItems, form.deliveryMethod]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!form.name || !form.email || !form.phone || !form.city || !form.address) {
+    if (
+      !form.name ||
+      !form.email ||
+      !form.phone ||
+      !form.city ||
+      (form.deliveryMethod === "delivery" && !form.address)
+    ) {
       toast.error("Заполните все обязательные поля");
       return;
     }
@@ -97,9 +108,8 @@ export default function Checkout() {
         customer_email: form.email,
         customer_phone: form.phone,
         type: user?.role === "b2b_client" ? "b2b" : "b2c",
-        status: "pending",
-        payment_status: "unpaid",
         payment_method: form.payment,
+        delivery_method: form.deliveryMethod,
         items: cartItems.map((item) => ({
           product_id: item.product_id,
           product_name: item.product_name,
@@ -107,10 +117,8 @@ export default function Checkout() {
           price: item.price,
           image_url: item.image_url,
         })),
-        subtotal: totals.subtotal,
-        shipping_cost: totals.shipping,
-        total: totals.total,
-        shipping_address: form.address,
+        shipping_address:
+          form.deliveryMethod === "pickup" ? siteConfig.location : form.address,
         shipping_city: form.city,
         notes: form.notes,
       });
@@ -131,14 +139,20 @@ export default function Checkout() {
       <PageHero
         eyebrow="Оформление заказа"
         title="Финальный шаг перед подтверждением"
-        description="Проверьте контактные данные, адрес и способ оплаты. После этого заказ сразу уйдёт в обработку."
+        description="Проверьте контактные данные, выберите способ получения и оплату. После этого заказ сразу уйдёт в обработку."
       />
 
       <section className="page-section py-12">
         <div className="mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-12">
-          <form id="checkout-form" onSubmit={handleSubmit} className="premium-panel space-y-6 px-7 py-8">
+          <form
+            id="checkout-form"
+            onSubmit={handleSubmit}
+            className="premium-panel space-y-6 px-7 py-8"
+          >
             <div>
-              <h2 className="font-serif text-[2rem] leading-none text-stone">Контактные данные</h2>
+              <h2 className="font-serif text-[2rem] leading-none text-stone">
+                Контактные данные
+              </h2>
               <div className="mt-5 grid gap-5 md:grid-cols-2">
                 <Field label="Имя *">
                   <Input
@@ -179,16 +193,55 @@ export default function Checkout() {
             <div className="section-divider" />
 
             <div>
-              <h2 className="font-serif text-[2rem] leading-none text-stone">Доставка и оплата</h2>
+              <h2 className="font-serif text-[2rem] leading-none text-stone">
+                Получение и оплата
+              </h2>
               <div className="mt-5 space-y-5">
-                <Field label="Адрес *">
-                  <Input
-                    value={form.address}
-                    onChange={(event) =>
-                      setForm((current) => ({ ...current, address: event.target.value }))
+                <Field label="Способ получения">
+                  <Select
+                    value={form.deliveryMethod}
+                    onValueChange={(deliveryMethod) =>
+                      setForm((current) => ({
+                        ...current,
+                        deliveryMethod,
+                        address:
+                          deliveryMethod === "pickup" ? siteConfig.location : current.address,
+                      }))
                     }
-                  />
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="delivery">Доставка</SelectItem>
+                      <SelectItem value="pickup">Самовывоз</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </Field>
+
+                {form.deliveryMethod === "delivery" ? (
+                  <Field label="Адрес *">
+                    <Input
+                      value={form.address}
+                      onChange={(event) =>
+                        setForm((current) => ({ ...current, address: event.target.value }))
+                      }
+                    />
+                  </Field>
+                ) : (
+                  <div className="rounded-[1.4rem] border border-[#E5D6C5] bg-[#FFFCF8] px-5 py-4">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                      Пункт самовывоза
+                    </p>
+                    <p className="mt-2 font-medium text-stone">Шоурум YUVEMA</p>
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                      {siteConfig.location}
+                    </p>
+                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                      Самовывоз доступен после подтверждения заказа менеджером.
+                    </p>
+                  </div>
+                )}
 
                 <Field label="Способ оплаты">
                   <Select
@@ -224,7 +277,9 @@ export default function Checkout() {
 
           <div>
             <div className="premium-panel sticky top-28 px-6 py-7">
-              <h2 className="font-serif text-[2rem] leading-none text-stone">Ваш заказ</h2>
+              <h2 className="font-serif text-[2rem] leading-none text-stone">
+                Ваш заказ
+              </h2>
               <div className="mt-6 space-y-3">
                 {cartItems.map((item) => (
                   <div key={item.id} className="flex justify-between gap-3 text-sm">
@@ -232,7 +287,7 @@ export default function Checkout() {
                       {item.product_name} × {item.quantity || 1}
                     </span>
                     <span className="shrink-0 text-stone">
-                      {((item.price || 0) * (item.quantity || 1)).toLocaleString()} ₸
+                      {((item.price || 0) * (item.quantity || 1)).toLocaleString("ru-RU")} ₸
                     </span>
                   </div>
                 ))}
@@ -241,19 +296,23 @@ export default function Checkout() {
               <div className="mt-6 space-y-3 border-t border-[#EEE2D6] pt-5 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Подытог</span>
-                  <span>{totals.subtotal.toLocaleString()} ₸</span>
+                  <span>{totals.subtotal.toLocaleString("ru-RU")} ₸</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Доставка</span>
+                  <span className="text-muted-foreground">
+                    {form.deliveryMethod === "pickup" ? "Самовывоз" : "Доставка"}
+                  </span>
                   <span>
-                    {totals.shipping === 0
+                    {form.deliveryMethod === "pickup"
                       ? "Бесплатно"
-                      : `${totals.shipping.toLocaleString()} ₸`}
+                      : totals.shipping === 0
+                        ? "Бесплатно"
+                        : `${totals.shipping.toLocaleString("ru-RU")} ₸`}
                   </span>
                 </div>
                 <div className="flex justify-between border-t border-[#EEE2D6] pt-4 text-base font-semibold">
                   <span>Итого</span>
-                  <span>{totals.total.toLocaleString()} ₸</span>
+                  <span>{totals.total.toLocaleString("ru-RU")} ₸</span>
                 </div>
               </div>
 

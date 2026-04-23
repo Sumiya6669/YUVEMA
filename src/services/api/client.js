@@ -1,5 +1,10 @@
 import { supabase } from "@/services/supabase/client";
+import { BlogPost } from "@/services/api/blogPosts";
+import { B2BApplication } from "@/services/api/b2bApplications";
+import { ContactMessage } from "@/services/api/contactMessages";
+import { Order } from "@/services/api/orders";
 import { createProductsEntity } from "@/services/api/products";
+import { User } from "@/services/api/profiles";
 import { createSupabaseEntity } from "@/services/api/supabaseEntity";
 import {
   assertNoError,
@@ -97,50 +102,8 @@ async function getUserRecord() {
 
 const Product = createProductsEntity();
 
-const BlogPost = createSupabaseEntity({
-  table: "blog_posts",
-  defaultOrder: "-created_date",
-});
-
 const Review = createSupabaseEntity({
   table: "reviews",
-  defaultOrder: "-created_date",
-});
-
-const Order = createSupabaseEntity({
-  table: "orders",
-  defaultOrder: "-created_date",
-  beforeCreate: async (payload) => {
-    const currentUser = await getCurrentSessionUser(supabase);
-
-    return {
-      ...payload,
-      user_id: currentUser?.id || null,
-    };
-  },
-});
-
-const User = createSupabaseEntity({
-  table: "profiles",
-  defaultOrder: "-created_date",
-  mapRecord: mapProfile,
-});
-
-const B2BApplication = createSupabaseEntity({
-  table: "b2b_applications",
-  defaultOrder: "-created_date",
-  beforeCreate: async (payload) => {
-    const currentUser = await getCurrentSessionUser(supabase);
-
-    return {
-      ...payload,
-      user_id: currentUser?.id || null,
-    };
-  },
-});
-
-const ContactMessage = createSupabaseEntity({
-  table: "contact_messages",
   defaultOrder: "-created_date",
 });
 
