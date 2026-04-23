@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
+  ChevronDown,
+  ChevronUp,
   Loader2,
   MessageCircle,
   RotateCcw,
@@ -255,6 +257,7 @@ export default function AiAssistantWidget() {
     toggleConcern,
   } = useAiWidget();
   const scrollerRef = useRef(null);
+  const [controlsCollapsed, setControlsCollapsed] = useState(false);
   const scenario = aiScenarioConfig[mode];
 
   useEffect(() => {
@@ -267,6 +270,18 @@ export default function AiAssistantWidget() {
       behavior: "smooth",
     });
   }, [entries, isOpen, mode, aiAssistant.isPending]);
+
+  useEffect(() => {
+    if (entries.length > 1) {
+      setControlsCollapsed(true);
+    }
+  }, [entries.length]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setControlsCollapsed(false);
+    }
+  }, [isOpen]);
 
   return (
     <>
@@ -304,7 +319,7 @@ export default function AiAssistantWidget() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 18, scale: 0.98 }}
               transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-x-3 bottom-3 top-auto flex h-[64vh] max-h-[620px] flex-col overflow-hidden rounded-[2rem] border border-[#E9DDD0] bg-[#FFFCF8]/96 shadow-[0_36px_90px_rgba(156,123,102,0.22)] backdrop-blur-xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:h-[560px] sm:max-h-[68vh] sm:w-[392px]"
+              className="absolute inset-x-3 bottom-3 top-auto flex h-[74vh] max-h-[760px] flex-col overflow-hidden rounded-[2rem] border border-[#E9DDD0] bg-[#FFFCF8]/96 shadow-[0_36px_90px_rgba(156,123,102,0.22)] backdrop-blur-xl sm:inset-x-auto sm:bottom-6 sm:right-6 sm:h-[680px] sm:max-h-[78vh] sm:w-[404px]"
             >
               <div className="border-b border-[#EEE3D6] px-5 py-4">
                 <div className="flex items-start justify-between gap-4">
@@ -331,7 +346,10 @@ export default function AiAssistantWidget() {
                     <button
                       key={scenarioKey}
                       type="button"
-                      onClick={() => changeMode(scenarioKey)}
+                      onClick={() => {
+                        setControlsCollapsed(false);
+                        changeMode(scenarioKey);
+                      }}
                       className={cn(
                         "rounded-full border px-3 py-2 text-[11px] uppercase tracking-[0.16em] transition-all",
                         mode === scenarioKey
@@ -345,12 +363,15 @@ export default function AiAssistantWidget() {
                 </div>
               </div>
 
-              <div ref={scrollerRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-3">
+              <div ref={scrollerRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
                 {entries.map((entry) => (
                   <ChatEntry
                     key={entry.id}
                     entry={entry}
-                    onSuggestionClick={(question) => setDraft(question)}
+                    onSuggestionClick={(question) => {
+                      setControlsCollapsed(false);
+                      setDraft(question);
+                    }}
                   />
                 ))}
 
@@ -371,86 +392,137 @@ export default function AiAssistantWidget() {
               </div>
 
               <div className="border-t border-[#EEE3D6] bg-[#FFFDF9] px-4 pb-4 pt-3">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                    {mode === "routine" ? "Параметры подбора" : "Быстрые запросы"}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setControlsCollapsed((current) => !current)}
+                    className="inline-flex items-center gap-1 rounded-full border border-[#E9DED2] bg-white px-3 py-1.5 text-[10px] uppercase tracking-[0.16em] text-[#7A6551] transition-all hover:border-[#D8C0A0] hover:bg-[#FFF9F1]"
+                  >
+                    {controlsCollapsed ? (
+                      <>
+                        Показать
+                        <ChevronDown className="h-3.5 w-3.5" />
+                      </>
+                    ) : (
+                      <>
+                        Скрыть
+                        <ChevronUp className="h-3.5 w-3.5" />
+                      </>
+                    )}
+                  </button>
+                </div>
+
                 {mode === "routine" ? (
-                  <div className="rounded-[1.4rem] border border-[#EEE2D6] bg-white px-4 py-4 shadow-soft">
-                    <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                      Профиль кожи
-                    </p>
+                  <div className="space-y-3">
+                    <AnimatePresence initial={false}>
+                      {!controlsCollapsed && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0, y: 8 }}
+                          animate={{ opacity: 1, height: "auto", y: 0 }}
+                          exit={{ opacity: 0, height: 0, y: 8 }}
+                          transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                          className="overflow-hidden"
+                        >
+                          <div className="rounded-[1.4rem] border border-[#EEE2D6] bg-white px-4 py-4 shadow-soft">
+                            <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                              Профиль кожи
+                            </p>
 
-                    <div className="mt-3">
-                      <p className="mb-2 text-xs uppercase tracking-[0.16em] text-[#8A7258]">
-                        Тип кожи
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {routineSkinTypes.map((item) => (
-                          <button
-                            key={item}
-                            type="button"
-                            onClick={() =>
-                              setRoutineProfile((current) => ({ ...current, skinType: item }))
-                            }
-                            className={cn(
-                              "rounded-full border px-3 py-2 text-xs transition-all",
-                              routineProfile.skinType === item
-                                ? "border-[#D6B185] bg-[#F8ECDD] text-[#684E34]"
-                                : "border-[#ECE1D5] bg-[#FFFDFC] text-[#7B6856] hover:bg-[#FFF7F0]",
-                            )}
-                          >
-                            {item}
-                          </button>
-                        ))}
+                            <div className="mt-3">
+                              <p className="mb-2 text-xs uppercase tracking-[0.16em] text-[#8A7258]">
+                                Тип кожи
+                              </p>
+                              <div className="flex flex-wrap gap-2">
+                                {routineSkinTypes.map((item) => (
+                                  <button
+                                    key={item}
+                                    type="button"
+                                    onClick={() =>
+                                      setRoutineProfile((current) => ({ ...current, skinType: item }))
+                                    }
+                                    className={cn(
+                                      "rounded-full border px-3 py-2 text-xs transition-all",
+                                      routineProfile.skinType === item
+                                        ? "border-[#D6B185] bg-[#F8ECDD] text-[#684E34]"
+                                        : "border-[#ECE1D5] bg-[#FFFDFC] text-[#7B6856] hover:bg-[#FFF7F0]",
+                                    )}
+                                  >
+                                    {item}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="mt-4">
+                              <p className="mb-2 text-xs uppercase tracking-[0.16em] text-[#8A7258]">
+                                Задачи
+                              </p>
+                              <div className="flex flex-wrap gap-2">
+                                {routineConcerns.map((concern) => (
+                                  <button
+                                    key={concern}
+                                    type="button"
+                                    onClick={() => toggleConcern(concern)}
+                                    className={cn(
+                                      "rounded-full border px-3 py-2 text-xs transition-all",
+                                      routineProfile.concerns.includes(concern)
+                                        ? "border-[#D6B185] bg-[#F8ECDD] text-[#684E34]"
+                                        : "border-[#ECE1D5] bg-[#FFFDFC] text-[#7B6856] hover:bg-[#FFF7F0]",
+                                    )}
+                                  >
+                                    {concern}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="mt-4">
+                              <p className="mb-2 text-xs uppercase tracking-[0.16em] text-[#8A7258]">
+                                Цель
+                              </p>
+                              <div className="flex flex-wrap gap-2">
+                                {routineGoals.map((goal) => (
+                                  <button
+                                    key={goal}
+                                    type="button"
+                                    onClick={() =>
+                                      setRoutineProfile((current) => ({ ...current, goal }))
+                                    }
+                                    className={cn(
+                                      "rounded-full border px-3 py-2 text-xs transition-all",
+                                      routineProfile.goal === goal
+                                        ? "border-[#D6B185] bg-[#F8ECDD] text-[#684E34]"
+                                        : "border-[#ECE1D5] bg-[#FFFDFC] text-[#7B6856] hover:bg-[#FFF7F0]",
+                                    )}
+                                  >
+                                    {goal}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    {controlsCollapsed && (
+                      <div className="rounded-[1.25rem] border border-[#EEE2D6] bg-white/92 px-4 py-3 text-sm text-[#6B5645] shadow-soft">
+                        <span className="font-medium text-stone">{routineProfile.skinType}</span>
+                        <span className="mx-2 text-[#C7AC86]">•</span>
+                        <span>{routineProfile.goal}</span>
+                        {routineProfile.concerns.length > 0 && (
+                          <>
+                            <span className="mx-2 text-[#C7AC86]">•</span>
+                            <span>{routineProfile.concerns.slice(0, 2).join(", ")}</span>
+                          </>
+                        )}
                       </div>
-                    </div>
+                    )}
 
-                    <div className="mt-4">
-                      <p className="mb-2 text-xs uppercase tracking-[0.16em] text-[#8A7258]">
-                        Задачи
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {routineConcerns.map((concern) => (
-                          <button
-                            key={concern}
-                            type="button"
-                            onClick={() => toggleConcern(concern)}
-                            className={cn(
-                              "rounded-full border px-3 py-2 text-xs transition-all",
-                              routineProfile.concerns.includes(concern)
-                                ? "border-[#D6B185] bg-[#F8ECDD] text-[#684E34]"
-                                : "border-[#ECE1D5] bg-[#FFFDFC] text-[#7B6856] hover:bg-[#FFF7F0]",
-                            )}
-                          >
-                            {concern}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="mt-4">
-                      <p className="mb-2 text-xs uppercase tracking-[0.16em] text-[#8A7258]">
-                        Цель
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {routineGoals.map((goal) => (
-                          <button
-                            key={goal}
-                            type="button"
-                            onClick={() =>
-                              setRoutineProfile((current) => ({ ...current, goal }))
-                            }
-                            className={cn(
-                              "rounded-full border px-3 py-2 text-xs transition-all",
-                              routineProfile.goal === goal
-                                ? "border-[#D6B185] bg-[#F8ECDD] text-[#684E34]"
-                                : "border-[#ECE1D5] bg-[#FFFDFC] text-[#7B6856] hover:bg-[#FFF7F0]",
-                            )}
-                          >
-                            {goal}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="mt-4 flex gap-2">
+                    <div className="flex gap-2">
                       <Button
                         onClick={submitRequest}
                         disabled={aiAssistant.isPending}
@@ -470,7 +542,10 @@ export default function AiAssistantWidget() {
                       </Button>
                       <Button
                         variant="outline"
-                        onClick={() => resetScenario(mode)}
+                        onClick={() => {
+                          setControlsCollapsed(false);
+                          resetScenario(mode);
+                        }}
                         className="px-4"
                       >
                         <RotateCcw className="h-4 w-4" />
@@ -479,25 +554,37 @@ export default function AiAssistantWidget() {
                   </div>
                 ) : (
                   <>
-                    <div className="mb-3 flex flex-wrap gap-2">
-                      {scenario.suggestions.map((item) => (
-                        <button
-                          key={item}
-                          type="button"
-                          onClick={() => setDraft(item)}
-                          className="rounded-full border border-[#ECE1D5] bg-white px-3 py-2 text-xs text-[#7A6652] shadow-soft transition-all hover:-translate-y-0.5 hover:bg-[#FFF8F1]"
+                    <AnimatePresence initial={false}>
+                      {!controlsCollapsed && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0, y: 8 }}
+                          animate={{ opacity: 1, height: "auto", y: 0 }}
+                          exit={{ opacity: 0, height: 0, y: 8 }}
+                          transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                          className="overflow-hidden"
                         >
-                          {item}
-                        </button>
-                      ))}
-                    </div>
+                          <div className="mb-3 flex flex-wrap gap-2">
+                            {scenario.suggestions.map((item) => (
+                              <button
+                                key={item}
+                                type="button"
+                                onClick={() => setDraft(item)}
+                                className="rounded-full border border-[#ECE1D5] bg-white px-3 py-2 text-xs text-[#7A6652] shadow-soft transition-all hover:-translate-y-0.5 hover:bg-[#FFF8F1]"
+                              >
+                                {item}
+                              </button>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
 
                     <div className="rounded-[1.4rem] border border-[#EEE2D6] bg-white p-3 shadow-soft">
                       <textarea
                         value={draft}
                         onChange={(event) => setDraft(event.target.value)}
                         placeholder={scenario.placeholder}
-                        className="min-h-[64px] w-full resize-none border-0 bg-transparent px-1 py-1 text-sm leading-relaxed text-stone outline-none placeholder:text-muted-foreground/75"
+                        className="min-h-[72px] w-full resize-none border-0 bg-transparent px-1 py-1 text-sm leading-relaxed text-stone outline-none placeholder:text-muted-foreground/75"
                       />
 
                       <div className="mt-3 flex items-center justify-between gap-3">
@@ -510,7 +597,10 @@ export default function AiAssistantWidget() {
                         <div className="flex gap-2">
                           <Button
                             variant="outline"
-                            onClick={() => resetScenario(mode)}
+                            onClick={() => {
+                              setControlsCollapsed(false);
+                              resetScenario(mode);
+                            }}
                             className="px-4"
                           >
                             <RotateCcw className="h-4 w-4" />
